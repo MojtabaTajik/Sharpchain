@@ -2,7 +2,7 @@
 
 namespace Sharpchain.Model
 {
-    public class Block
+    public class Block : IBlock
     {
         public Int64 Index { get; set; }
         public string PrevHash { get; set; }

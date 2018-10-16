@@ -42,6 +42,7 @@
     <Compile Include="Blockchain.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Model\Block.cs" />
+    <Compile Include="Model\IBlock.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

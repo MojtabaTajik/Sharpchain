@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sharpchain.Helpers;
@@ -6,41 +7,48 @@ using Sharpchain.Model;
 
 namespace Sharpchain
 {
-    public class Blockchain
+    public class Blockchain : IEnumerable<IBlock>
     {
         #region Public Fields
         public int Difficulty { get; set; }
 
-        public List<Block> GetBlocks => _blockchain;
+        public List<IBlock> Items { get; set; } = new List<IBlock> { };
+
+        public IBlock this[int index]
+        {
+            get => Items[index];
+            set => Items[index] = value;
+        }
         #endregion
 
         #region Private Fields
-        private readonly List<Block> _blockchain = new List<Block> { };
-  
-        private Block LatestBlock => _blockchain.Last();
+
+        private Block LatestBlock => (Block) Items.Last();
+
         #endregion
+
 
         public Blockchain()
         {
             if (Difficulty <= 0)
                 Difficulty = 3;
 
-            _blockchain.Add(Genesis());
+            Items.Add(Genesis());
         }
 
-        public Block Mine(string data)
+        public IBlock Mine(string data)
         {
-            Block newBlock = GenerateNextBlock(data);
+            IBlock newBlock = GenerateNextBlock(data);
 
             if (this.IsValidNextBlock(this.LatestBlock, newBlock))
-                _blockchain.Add(newBlock);
+                Items.Add(newBlock);
             else
                 Console.WriteLine($"Error : Invalid block : {newBlock}");
 
             return LatestBlock;
         }
 
-        private Block GenerateNextBlock(string data)
+        private IBlock GenerateNextBlock(string data)
         {
             Int64 nextIndex = this.LatestBlock.Index + 1;
             string prevHash = this.LatestBlock.Hash;
@@ -77,13 +85,13 @@ namespace Sharpchain
             return blockFootprint.ToSHA256HashString();
         }
 
-        private string CalculateBlockHash(Block block)
+        private string CalculateBlockHash(IBlock block)
         {
             string blockFootprint = $"{block.Index}{block.PrevHash}{block.TimeStamp}{block.Data}{block.Nonce}";
             return blockFootprint.ToSHA256HashString();
         }
 
-        private bool IsValidNextBlock(Block prevBlock, Block nextBlock)
+        private bool IsValidNextBlock(IBlock prevBlock, IBlock nextBlock)
         {
             string nextBlockHash = CalculateBlockHash(nextBlock);
 
@@ -111,7 +119,7 @@ namespace Sharpchain
             return hash.StartsWith(difficultyZeroString);
         }
 
-        private Block Genesis()
+        private IBlock Genesis()
         {
             Int64 index = 0;
             string prevHash = "0";
@@ -138,6 +146,16 @@ namespace Sharpchain
                 Hash = nextHash,
                 Nonce = nonce
             };
+        }
+
+        public IEnumerator<IBlock> GetEnumerator()
+        {
+            return Items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -17,11 +17,11 @@ namespace Sharpchain
             {
                 Console.WriteLine($"Mining new block - Difficulty : {blockchain.Difficulty}");
 
-                Block minedBlock = blockchain.Mine($"Random data in loop {i}");
+                IBlock minedBlock = blockchain.Mine($"Random data in loop {i}");
             }
 
             Console.WriteLine();
-            foreach (Block block in blockchain.GetBlocks)
+            foreach (IBlock block in blockchain)
             {
                 Console.WriteLine(block);
             }
