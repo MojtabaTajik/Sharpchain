@@ -9,15 +9,23 @@ namespace Sharpchain
         {
             Console.Title = "# Sharpchain by Felony #";
 
+            const int difficulty = 4;
             int numberOfBlocksToMine = 3;
 
-            var blockchain = new Blockchain{Difficulty = 4};
+            var blockchain = new Blockchain.Blockchain(difficulty);
 
             for (int i = 1; i <= numberOfBlocksToMine; i++)
             {
-                Console.WriteLine($"Mining new block - Difficulty : {blockchain.Difficulty}");
+                try
+                {
+                    Console.WriteLine($"Mining new block - Difficulty : {blockchain.Difficulty}");
 
-                IBlock minedBlock = blockchain.Mine($"Random data in loop {i}");
+                    IBlock minedBlock = blockchain.Mine($"Random data in loop {i}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
 
             Console.WriteLine();
